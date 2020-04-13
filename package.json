@@ -1,0 +1,44 @@
+{
+  "name": "faasfileservice",
+  "version": "1.0.0",
+  "description": "A simple http based download/upload micro service",
+  "scripts": {
+    "server": "node ./src/index.js",
+    "test": "NODE_ENV=test mocha",
+    "test-cov": "NODE_ENV=test nyc mocha",
+    "lint": "eslint 'src/**'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fritogotlayed/faasFileService.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fritogotlayed/faasFileService/issues"
+  },
+  "homepage": "https://github.com/fritogotlayed/faasFileService#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "bunyan": "^1.8.12",
+    "express": "^4.17.1",
+    "ioredis": "^4.16.2",
+    "lodash": "^4.17.15",
+    "node-fetch": "^2.6.0",
+    "node-redis-pubsub": "^4.0.0",
+    "parse-redis-url": "0.0.2",
+    "redis": "^3.0.2",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "mocha": "^7.1.1",
+    "nyc": "^15.0.1",
+    "sinon": "^9.0.2",
+    "sinon-chai": "^3.5.0"
+  }
+}
