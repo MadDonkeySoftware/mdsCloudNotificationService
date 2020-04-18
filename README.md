@@ -1,2 +1,2 @@
-# faasFileService
-A simple http based download/upload micro service
+# faasNotificationService
+A simple http based Pub/Sub micro service
