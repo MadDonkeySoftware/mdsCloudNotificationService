@@ -1,5 +1,5 @@
 {
-  "name": "faasfileservice",
+  "name": "faasNotificationService",
   "version": "1.0.0",
   "description": "A simple http based download/upload micro service",
   "scripts": {
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fritogotlayed/faasFileService.git"
+    "url": "git+https://github.com/fritogotlayed/faasNotificationService.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fritogotlayed/faasFileService/issues"
+    "url": "https://github.com/fritogotlayed/faasNotificationService/issues"
   },
-  "homepage": "https://github.com/fritogotlayed/faasFileService#readme",
+  "homepage": "https://github.com/fritogotlayed/faasNotificationService#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.12",
