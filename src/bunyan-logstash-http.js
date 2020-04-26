@@ -17,7 +17,7 @@ const nameFromLevel = {
  * Constructs a new logger object that emits events to Logstash via HTTP or HTTPS
  *
  * @param {Object} [options] An object to override settings of the logger.
- * @param {String} [options.loggingEndpoint] The logstash host that will handle events via HTTP/HTTPS.
+ * @param {String} [options.loggingEndpoint] The HTTP/HTTPS logstash host url.
  * @param {Object} [options.metadata] The base set of metadata to send with every log message.
  * @param {Function} [error] Callback for when writing an error out occurs.
  */

@@ -9,7 +9,7 @@ const BunyanLogstashHttp = require('./bunyan-logstash-http');
  */
 const loggerMetadata = { fromLocal: process.env.DEBUG };
 const logger = bunyan.createLogger({
-  name: 'faasNotificationService',
+  name: 'mdsCloudNotificationService',
   level: bunyan.TRACE,
   serializers: bunyan.stdSerializers,
   streams: [
