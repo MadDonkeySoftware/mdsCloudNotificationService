@@ -1,13 +1,11 @@
 const express = require('express');
 
-const { pubSub } = require('../globals');
-
-const { nrp } = pubSub;
+const globals = require('../globals');
 
 const router = express.Router();
 
-
-router.post('/emit/:topic', (request, response) => {
+const emitHandler = (request, response) => {
+  const { nrp } = globals.getPubSub();
   const { params, body } = request;
   const { topic } = params;
 
@@ -21,6 +19,8 @@ router.post('/emit/:topic', (request, response) => {
 
   response.status(200);
   response.send();
-});
+};
+
+router.post('/emit/:topic', emitHandler);
 
 module.exports = router;

@@ -1,13 +1,17 @@
-const { logger } = require('../globals');
+const globals = require('../globals');
+
+const logger = globals.getLogger();
 
 const exitHandler = (options, exitCode) => {
   if (options.cleanup) logger.trace('cleanup');
-  if (options.exitCode || exitCode === 0) logger.trace(`ExitCode: ${exitCode}`);
+  if (options.exitCode || exitCode === 0) logger.trace({ exitCode }, `ExitCode: ${exitCode}`);
   if (options.exit) {
-    Promise.resolve(logger.info('Shutting down.'))
+    Promise.resolve(logger.trace('Shutting down.'))
       .then(() => {
-        const ret = options.onShutdown();
-        if (ret && ret.then) return ret;
+        if (options.onShutdown) {
+          const ret = options.onShutdown();
+          if (ret && ret.then) return ret;
+        }
         return Promise.resolve();
       })
       .then(() => process.exit());
@@ -28,7 +32,6 @@ const wire = (onShutdown) => {
   // catches uncaught exceptions
   process.on('uncaughtException', (ex) => {
     logger.error({ err: ex }, 'Unhandled Exception');
-    exitHandler.bind(null, { exit: true, onShutdown });
   });
 };
 
