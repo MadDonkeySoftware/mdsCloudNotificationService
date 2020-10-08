@@ -6,7 +6,7 @@ const appShutdown = require('../src/handlers/app_shutdown');
 const pubSub = require('../src/handlers/pub-sub');
 
 const logger = globals.getLogger();
-const port = 8888;
+const port = process.env.API_PORT || 8888;
 const app = src.buildApp();
 
 const server = http.Server(app);
