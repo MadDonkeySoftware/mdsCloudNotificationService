@@ -1,20 +1,15 @@
 const express = require('express');
-const orid = require('@maddonkeysoftware/orid-node');
 
 const globals = require('../globals');
+const handlerHelpers = require('./handler-helpers');
 
 const router = express.Router();
+const logger = globals.getLogger();
 
 const emitHandler = (request, response) => {
   const { nrp } = globals.getPubSub();
   const { params, body } = request;
   const { topic } = params;
-
-  if (!orid.v1.isValid(topic)) {
-    response.status(400);
-    response.send();
-    return;
-  }
 
   const msg = {
     ts: new Date().toISOString(),
@@ -28,6 +23,10 @@ const emitHandler = (request, response) => {
   response.send();
 };
 
-router.post('/emit/:topic', emitHandler);
+router.post('/emit/:topic',
+  handlerHelpers.validateToken(logger),
+  handlerHelpers.ensureRequestOrid(false, 'topic'),
+  handlerHelpers.canAccessResource({ oridKey: 'topic', logger }),
+  emitHandler);
 
 module.exports = router;

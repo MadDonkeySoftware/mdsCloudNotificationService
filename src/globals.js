@@ -2,6 +2,7 @@ const Redis = require('ioredis');
 const parseRedisUrl = require('parse-redis-url')();
 const NRP = require('node-redis-pubsub');
 const bunyan = require('bunyan');
+
 const bunyanLogstashHttp = require('./bunyan-logstash-http');
 
 const buildLogStreams = () => {
@@ -30,7 +31,7 @@ const buildLogStreams = () => {
 };
 
 const logger = bunyan.createLogger({
-  name: 'yeoman test dir',
+  name: 'mdsCloudNotificationService',
   level: bunyan.TRACE,
   serializers: bunyan.stdSerializers,
   streams: buildLogStreams(),
