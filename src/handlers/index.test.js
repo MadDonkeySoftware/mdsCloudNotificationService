@@ -10,7 +10,6 @@ const helpers = require('../helpers');
 const handlerHelpers = require('./handler-helpers');
 const src = require('..');
 
-
 describe('src/handlers/index', () => {
   afterEach(() => {
     sinon.restore();
