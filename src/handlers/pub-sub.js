@@ -1,8 +1,39 @@
+const _ = require('lodash');
 const socketio = require('socket.io');
-const globals = require('../globals');
+const jwt = require('jsonwebtoken');
 
+const globals = require('../globals');
+const handlerHelpers = require('./handler-helpers');
+
+/**
+ * @param {socketio.Server} io the socket.io server
+ */
 const createPubSubEventHandler = (io) => (data, channel) => {
   io.emit(`${channel}`, data);
+};
+
+// https://socket.io/docs/v3/index.html
+// https://socket.io/docs/v3/middlewares/#Sending-credentials
+/**
+ * @callback middlewareNext
+ * @param {*} [err]
+ * @returns {void}
+ */
+
+/**
+ * @param {socketio.Socket} socket the socket
+ * @param {middlewareNext} next the next func
+ */
+const socketIoAuthMiddleware = async (socket, next) => {
+  const token = _.get(socket, ['handshake', 'auth', 'token']);
+  if (token) {
+    const publicSignature = await handlerHelpers.getAppPublicSignature();
+    const parsedToken = jwt.verify(token, publicSignature, { complete: true });
+    if (parsedToken && parsedToken.payload.iss === handlerHelpers.getIssuer()) {
+      return next();
+    }
+  }
+  return next(new Error('unauthorized'));
 };
 
 const wire = (server) => {
@@ -11,6 +42,8 @@ const wire = (server) => {
 
   if (!server) { throw new Error('server cannot be null/undefined.'); }
   const io = socketio(server);
+
+  io.use(socketIoAuthMiddleware);
 
   // Any event we get from redis we send out to our socket listeners
   const nrpHandler = createPubSubEventHandler(io);
@@ -32,5 +65,6 @@ const wire = (server) => {
 
 module.exports = {
   createPubSubEventHandler,
+  socketIoAuthMiddleware,
   wire,
 };

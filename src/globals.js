@@ -42,7 +42,6 @@ const logger = bunyan.createLogger({
  */
 const getLogger = () => logger;
 
-
 /**
  * Node Redis PubSub things.
  */
@@ -69,6 +68,16 @@ const buildRedisIoConstructorOptions = (maxRetries) => {
   return options;
 };
 
+/**
+ * @typedef GetPubSubResult
+ * @property {NRP.NodeRedisPubSub} nrp
+ * @property {Redis} emitter
+ * @property {Redis} receiver
+ */
+
+/**
+ * @returns {GetPubSubResult}
+ */
 const getPubSub = () => {
   if (process.env.NODE_ENV !== 'test') {
     const redisConnDetails = parseRedisUrl.parse(process.env.REDIS_URL);

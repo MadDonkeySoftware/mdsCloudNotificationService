@@ -2,9 +2,11 @@
 const sinon = require('sinon');
 const chai = require('chai');
 const proxyquire = require('proxyquire');
+const jwt = require('jsonwebtoken');
 
 const globals = require('../globals');
 const pubSub = require('./pub-sub');
+const handlerHelpers = require('./handler-helpers');
 
 describe('pub-sub', () => {
   afterEach(() => {
@@ -21,7 +23,9 @@ describe('pub-sub', () => {
 
       // Act
       const localPubSub = proxyquire('./pub-sub', {
-        'socket.io': sinon.stub(),
+        'socket.io': sinon.stub().returns({
+          use: sinon.stub(),
+        }),
       });
       const shutdownCallback = localPubSub.wire(sinon.stub());
 
@@ -40,14 +44,19 @@ describe('pub-sub', () => {
 
       // Act / Assert
       const localPubSub = proxyquire('./pub-sub', {
-        'socket.io': sinon.stub(),
+        'socket.io': sinon.stub().returns({
+          use: sinon.stub(),
+        }),
       });
       chai.expect(localPubSub.wire).to.throw();
     });
 
     it('returned shutdown handler closes all applicable streams', () => {
       // Arrange
-      const ioStub = { close: sinon.stub() };
+      const ioStub = {
+        use: sinon.stub(),
+        close: sinon.stub(),
+      };
       const pubSubStub = {
         nrp: {
           on: sinon.stub(),
@@ -79,7 +88,10 @@ describe('pub-sub', () => {
 
     it('returned shutdown handler does not fail when emitter / receiver quit fails', () => {
       // Arrange
-      const ioStub = { close: sinon.stub() };
+      const ioStub = {
+        use: sinon.stub(),
+        close: sinon.stub(),
+      };
       const pubSubStub = {
         nrp: {
           on: sinon.stub(),
@@ -121,6 +133,84 @@ describe('pub-sub', () => {
 
       // Assert
       chai.expect(ioStub.emit.firstCall.args).to.eql(['test-channel', { foo: 1, bar: 2 }]);
+    });
+  });
+
+  describe('socketIoAuthMiddleware', () => {
+    it('when no token in socket auth then calls callback with error', (done) => {
+      // Arrange
+      const sock = {};
+
+      // Assert
+      const cb = (data) => {
+        try {
+          chai.expect(data.name).to.equal('Error');
+          chai.expect(data.message).to.equal('unauthorized');
+          done();
+        } catch (err) {
+          done(err);
+        }
+      };
+
+      // Act
+      pubSub.socketIoAuthMiddleware(sock, cb);
+    });
+
+    it('when token in socket auth is valid then calls callback with nothing', (done) => {
+      // Arrange
+      const sock = {
+        handshake: {
+          auth: {
+            token: 'abc',
+          },
+        },
+      };
+      sinon.stub(jwt, 'verify').returns({
+        payload: { iss: 'testIssuer' },
+      });
+      sinon.stub(handlerHelpers, 'getIssuer').returns('testIssuer');
+
+      // Assert
+      const cb = (data) => {
+        try {
+          chai.expect(typeof data).to.equal('undefined');
+          done();
+        } catch (err) {
+          done(err);
+        }
+      };
+
+      // Act
+      pubSub.socketIoAuthMiddleware(sock, cb);
+    });
+
+    it('when token in socket auth is invalid then calls callback with error', (done) => {
+      // Arrange
+      const sock = {
+        handshake: {
+          auth: {
+            token: 'abc',
+          },
+        },
+      };
+      sinon.stub(jwt, 'verify').returns({
+        payload: { iss: 'badIssuer' },
+      });
+      sinon.stub(handlerHelpers, 'getIssuer').returns('testIssuer');
+
+      // Assert
+      const cb = (data) => {
+        try {
+          chai.expect(data.name).to.equal('Error');
+          chai.expect(data.message).to.equal('unauthorized');
+          done();
+        } catch (err) {
+          done(err);
+        }
+      };
+
+      // Act
+      pubSub.socketIoAuthMiddleware(sock, cb);
     });
   });
 });
