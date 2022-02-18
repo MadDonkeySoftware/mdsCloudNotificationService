@@ -132,7 +132,9 @@ describe('pub-sub', () => {
       handler({ foo: 1, bar: 2 }, 'test-channel');
 
       // Assert
-      chai.expect(ioStub.emit.firstCall.args).to.eql(['test-channel', { foo: 1, bar: 2 }]);
+      chai
+        .expect(ioStub.emit.firstCall.args)
+        .to.eql(['test-channel', { foo: 1, bar: 2 }]);
     });
   });
 

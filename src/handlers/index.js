@@ -36,7 +36,8 @@ const handleBasicAuth = (request, response, next) => {
   if (token) return next();
   if (!authorization) {
     response.setHeader('content-type', 'text/plain');
-    const message = 'Please include authentication token in header "token" or basic authorization in header "authorization"';
+    const message =
+      'Please include authentication token in header "token" or basic authorization in header "authorization"';
     return handlerHelpers.sendResponse(response, 403, message);
   }
 
@@ -55,30 +56,35 @@ const handleBasicAuth = (request, response, next) => {
     return next();
   }
 
-  const url = urlJoin(helpers.getEnvVar('MDS_IDENTITY_URL'), 'v1', 'authenticate');
+  const url = urlJoin(
+    helpers.getEnvVar('MDS_IDENTITY_URL'),
+    'v1',
+    'authenticate',
+  );
   const body = {
     accountId,
     userId,
     password,
   };
-  return axios.post(url, body)
-    .then((resp) => {
-      const newToken = resp.data.token;
-      request.headers.token = newToken;
-      const parsedToken = jwt.decode(newToken);
-      const bufferMs = 5000; // 5 seconds
-      const tokenExp = parsedToken.exp * 1000; // Convert to millisecond
-      const exp = tokenExp - new Date().getTime() - bufferMs;
-      memoryCache.put(cacheKey, resp.data.token, exp);
-      return next();
-    });
+  return axios.post(url, body).then((resp) => {
+    const newToken = resp.data.token;
+    request.headers.token = newToken;
+    const parsedToken = jwt.decode(newToken);
+    const bufferMs = 5000; // 5 seconds
+    const tokenExp = parsedToken.exp * 1000; // Convert to millisecond
+    const exp = tokenExp - new Date().getTime() - bufferMs;
+    memoryCache.put(cacheKey, resp.data.token, exp);
+    return next();
+  });
 };
 
-router.post('/emit/:topic',
+router.post(
+  '/emit/:topic',
   handlerHelpers.ensureRequestOrid(false, 'topic'),
   handleBasicAuth,
   handlerHelpers.validateToken(logger),
   handlerHelpers.canAccessResource({ oridKey: 'topic', logger }),
-  emitHandler);
+  emitHandler,
+);
 
 module.exports = router;

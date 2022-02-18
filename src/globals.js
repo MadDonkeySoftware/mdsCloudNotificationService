@@ -16,15 +16,13 @@ const buildLogStreams = () => {
   }
 
   if (process.env.MDS_LOG_URL) {
-    logStreams.push(
-      {
-        stream: bunyanLogstashHttp.createLoggerStream({
-          loggingEndpoint: process.env.MDS_LOG_URL,
-          level: 'debug',
-          metadata: loggerMetadata,
-        }),
-      },
-    );
+    logStreams.push({
+      stream: bunyanLogstashHttp.createLoggerStream({
+        loggingEndpoint: process.env.MDS_LOG_URL,
+        level: 'debug',
+        metadata: loggerMetadata,
+      }),
+    });
   }
 
   return logStreams;
@@ -57,7 +55,10 @@ const buildRedisIoConstructorOptions = (maxRetries) => {
           tries: times,
           url: process.env.REDIS_URL || '127.0.0.1:6379', // ioredis default
         };
-        log.warn(metadata, 'A problem occurred while connecting. A delay will occur before reconnecting.');
+        log.warn(
+          metadata,
+          'A problem occurred while connecting. A delay will occur before reconnecting.',
+        );
         return delay;
       }
 
@@ -82,8 +83,16 @@ const getPubSub = () => {
   if (process.env.NODE_ENV !== 'test') {
     const redisConnDetails = parseRedisUrl.parse(process.env.REDIS_URL);
     const options = module.exports.buildRedisIoConstructorOptions(10);
-    const emitter = new Redis(redisConnDetails.port, redisConnDetails.host, options);
-    const receiver = new Redis(redisConnDetails.port, redisConnDetails.host, options);
+    const emitter = new Redis(
+      redisConnDetails.port,
+      redisConnDetails.host,
+      options,
+    );
+    const receiver = new Redis(
+      redisConnDetails.port,
+      redisConnDetails.host,
+      options,
+    );
 
     const nrp = new NRP({ emitter, receiver });
     const pubSub = { nrp, emitter, receiver };
@@ -94,7 +103,10 @@ const getPubSub = () => {
   return undefined;
 };
 
-const delay = (timeout) => new Promise((resolve) => setTimeout(resolve, timeout));
+const delay = (timeout) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, timeout);
+  });
 
 module.exports = {
   buildLogStreams,

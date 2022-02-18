@@ -40,7 +40,9 @@ const wire = (server) => {
   const { nrp, emitter, receiver } = globals.getPubSub();
   const logger = globals.getLogger();
 
-  if (!server) { throw new Error('server cannot be null/undefined.'); }
+  if (!server) {
+    throw new Error('server cannot be null/undefined.');
+  }
   const io = socketio(server);
 
   io.use(socketIoAuthMiddleware);
@@ -56,8 +58,7 @@ const wire = (server) => {
     return Promise.all([
       emitter.quit().catch(() => {}),
       receiver.quit().catch(() => {}),
-    ])
-      .then(() => logger.trace('Promise all resolved'));
+    ]).then(() => logger.trace('Promise all resolved'));
   };
 
   return shutdownHandler;

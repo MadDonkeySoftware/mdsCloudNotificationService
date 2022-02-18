@@ -32,8 +32,14 @@ describe('src/handlers/index', () => {
         .expect('content-type', /text\/plain/)
         .expect(403)
         .then((resp) => {
-          chai.expect(resp.text).to.eql('Please include authentication token in header "token" or basic authorization in header "authorization"');
-          chai.expect(emitStub.notCalled).to.eql(true, 'Expected emitStub to not be called but was called.');
+          chai
+            .expect(resp.text)
+            .to.eql(
+              'Please include authentication token in header "token" or basic authorization in header "authorization"',
+            );
+          chai
+            .expect(emitStub.notCalled)
+            .to.eql(true, 'Expected emitStub to not be called but was called.');
         });
     });
 
@@ -45,7 +51,9 @@ describe('src/handlers/index', () => {
         nrp: { emit: emitStub },
       });
       sinon.stub(handlerHelpers, 'getIssuer').returns('testIssuer');
-      sinon.stub(handlerHelpers, 'getAppPublicSignature').resolves('publicSignature');
+      sinon
+        .stub(handlerHelpers, 'getAppPublicSignature')
+        .resolves('publicSignature');
       sinon.stub(jwt, 'verify').returns({
         payload: {
           iss: 'testIssuer',
@@ -87,11 +95,13 @@ describe('src/handlers/index', () => {
           nrp: { emit: emitStub },
         });
         sinon.stub(handlerHelpers, 'getIssuer').returns('testIssuer');
-        sinon.stub(handlerHelpers, 'getAppPublicSignature').resolves('publicSignature');
+        sinon
+          .stub(handlerHelpers, 'getAppPublicSignature')
+          .resolves('publicSignature');
         const testToken = {
           iss: 'testIssuer',
           accountId: '1001',
-          exp: (new Date().getTime() / 1000) + 10000,
+          exp: new Date().getTime() / 1000 + 10000,
         };
         sinon.stub(jwt, 'decode').returns({
           ...testToken,
@@ -140,11 +150,13 @@ describe('src/handlers/index', () => {
           nrp: { emit: emitStub },
         });
         sinon.stub(handlerHelpers, 'getIssuer').returns('testIssuer');
-        sinon.stub(handlerHelpers, 'getAppPublicSignature').resolves('publicSignature');
+        sinon
+          .stub(handlerHelpers, 'getAppPublicSignature')
+          .resolves('publicSignature');
         const testToken = {
           iss: 'testIssuer',
           accountId: '1001',
-          exp: (new Date().getTime() / 1000) + 10000,
+          exp: new Date().getTime() / 1000 + 10000,
         };
         sinon.stub(jwt, 'decode').returns({
           ...testToken,
@@ -202,7 +214,9 @@ describe('src/handlers/index', () => {
         .expect(400)
         .then((resp) => {
           chai.expect(resp.text).to.eql('resource not understood');
-          chai.expect(emitStub.notCalled).to.eql(true, 'Expected emitStub to not be called but was called.');
+          chai
+            .expect(emitStub.notCalled)
+            .to.eql(true, 'Expected emitStub to not be called but was called.');
         });
     });
   });
