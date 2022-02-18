@@ -93,12 +93,18 @@ describe('globals', () => {
       let times = 0;
       function fakeRedis() {
         times += 1;
-        if (times === 1) { return stubEmitter; }
-        if (times === 2) { return stubReceiver; }
+        if (times === 1) {
+          return stubEmitter;
+        }
+        if (times === 2) {
+          return stubReceiver;
+        }
         return undefined;
       }
 
-      function fakeNrp() { return stubNrp; }
+      function fakeNrp() {
+        return stubNrp;
+      }
 
       // Act
       let pubSub;
