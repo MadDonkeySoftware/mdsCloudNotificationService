@@ -35,7 +35,7 @@
     "node-fetch": "^3.2.0",
     "node-redis-pubsub": "^5.0.0",
     "parse-redis-url": "0.0.2",
-    "redis": "^4.0.3",
+    "redis": "^4.3.1",
     "socket.io": "^4.4.1",
     "socket.io-client": "^4.4.1",
     "url-join": "^4.0.1"
