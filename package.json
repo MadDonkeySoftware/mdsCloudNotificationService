@@ -30,7 +30,7 @@
     "express": "^4.17.3",
     "ioredis": "^4.28.5",
     "jsonwebtoken": "^9.0.0",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "memory-cache": "^0.2.0",
     "node-fetch": "^3.2.0",
     "node-redis-pubsub": "^5.0.0",
